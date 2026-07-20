@@ -37,21 +37,24 @@ app.get("/movies", async (req, res) => {
   }
 });
 
-// 2. Rota de Hoje: Cadastrar um novo filme (POST)
+// 2. Rota de Hoje: Cadastrar um novo filme (POST) - Parte 2 Dinâmica
 app.post("/movies", async (req, res) => {
   try {
-    // Pegamos as variáveis que vêm do Thunder Client
-    const { titulo, id_categoria, data_lancamento, quantidade_oscars } = req.body;
+    // Pegamos as informações que vêm do "frontend" (Thunder Client)
+    // Deixei mapeado com os nomes em português para casar perfeitamente com seu banco!
+    const { titulo, sinopse, ano_lancamento, duracao_minutos, categoria_id } = req.body;
 
     const novoFilme = await prisma.filmes.create({
       data: {
         titulo: titulo,
-        categoria_id: Number(id_categoria), // <- Ajustado aqui! Agora bate com o seu schema.prisma
-        // O campo data_lancamento e quantidade_oscars não estão nesse seu modelo físico de filmes, 
-        // mas se o seu Express precisar deles para outras regras, trate-os aqui se necessário.
+        sinopse: sinopse,
+        ano_lancamento: Number(ano_lancamento),
+        duracao_minutos: Number(duracao_minutos),
+        categoria_id: Number(categoria_id), // Garante que vai como número inteiro para o banco
       },
     });
 
+    // Retorna o filme criado com status 201 (Created)
     res.status(201).json(novoFilme);
   } catch (error) {
     console.error("Erro ao cadastrar filme:", error);
