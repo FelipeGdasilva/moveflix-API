@@ -43,6 +43,15 @@ app.post("/movies", async (req, res) => {
     // Pegamos as informações que vêm do "frontend" (Thunder Client)
     // Deixei mapeado com os nomes em português para casar perfeitamente com seu banco!
     const { titulo, sinopse, ano_lancamento, duracao_minutos, categoria_id } = req.body;
+    const filmeExistente = await prisma.filmes.findFirst({
+      where:{
+        titulo:{equals: titulo, mode: "insensitive"},
+      }
+    });
+
+    if (filmeExistente) {
+      return res.status(400).json({ message: "já existe um filme cadastrado com esse titulo!" });
+    }
 
     const novoFilme = await prisma.filmes.create({
       data: {
