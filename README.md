@@ -1,20 +1,84 @@
-# Moveflix API 🎬
+# 🎬 MoveFlix API
 
-API desenvolvida para o gerenciamento e listagem de filmes e categorias, integrada a um banco de dados PostgreSQL.
+ Uma API RESTful para gerenciamento e catálogo de filmes, desenvolvida com Node.js, Express, Prisma ORM e PostgreSQL durante o módulo de Back-end do curso DevQuest.
 
-## 🚀 Tecnologias e Arquitetura Moderna
+---
 
-Este projeto foi construído utilizando as versões mais recentes das tecnologias de mercado, superando arquiteturas legadas:
+## 📌 Sobre o Projeto
 
-- **Node.js (v24)** utilizando **ES Modules (`import/export`)** para um código moderno e nativo.
-- **TypeScript** para tipagem estática e segurança durante o desenvolvimento.
-- **Express** para gerenciamento de rotas e requisições HTTP de forma leve e rápida.
-- **Prisma ORM (v7)**: Migrado com sucesso para a versão mais recente do Prisma, eliminando os gargalos das engines antigas em Rust.
-- **Gerenciamento de Conexão com `@prisma/adapter-pg` e `pg`**: Em conformidade com a nova arquitetura do Prisma 7, a API utiliza um sistema de **Pool de Conexões** (piscina de conexões) gerenciado de forma eficiente através do driver nativo do PostgreSQL para Node.js, garantindo estabilidade e escalabilidade.
+A **MoveFlix API** foi construída para consolidar conceitos fundamentais de desenvolvimento Back-end, manipulando rotas HTTP, validação de regras de negócio e integração direta com banco de dados relacional.
 
-## 🛠️ Como rodar o projeto localmente
+### 🛠️ Funcionalidades
+- [x] **Listar Filmes (`GET /movies`):** Retorna todos os filmes cadastrados no banco de dados.
+- [x] **Cadastrar Filme (`POST /movies`):** Adiciona um novo filme com validações de dados (como datas e campos numéricos).
+- [x] **Validação de Duplicidade:** Impede a inserção de filmes com o mesmo título (busca *case-insensitive*).
+- [x] **Atualizar Filme (`PUT /movies/:id`):** Atualiza informações de um filme existente buscando pelo seu ID.
 
-1. Clone o repositório.
-2. Instale as dependências:
+---
+
+## 🚀 Tecnologias Utilizadas
+
+- **Node.js** - Ambiente de execução JavaScript no servidor
+- **TypeScript** - Superset JavaScript com tipagem estática
+- **Express** - Framework web para criação das rotas e APIs
+- **Prisma 7 (`@prisma/client`)** - ORM moderno para comunicação com o banco
+- **PostgreSQL (`@prisma/adapter-pg`)** - Banco de dados relacional
+- **Thunder Client / Postman** - Testes e requisições HTTP
+
+---
+
+## ⚙️ Regras de Negócio e Tratamento de Erros
+
+- **`201 Created`**: Retornado ao cadastrar um filme com sucesso.
+- **`200 OK`**: Retornado ao listar ou atualizar filmes com sucesso.
+- **`409 Conflict`**: Retornado quando há tentativa de cadastrar um filme que já possui o título registrado no banco.
+- **`404 Not Found`**: Retornado ao tentar acessar ou atualizar uma rota com ID inexistente.
+- **`500 Internal Server Error`**: Tratamento genérico de falhas internas no servidor com blocos `try/catch`.
+
+---
+
+## 🗄️ Modelo do Banco de Dados (Prisma Schema)
+
+O banco contém a tabela principal `filmes` estruturada com os seguintes campos:
+
+| Campo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| `id` | `Int` | Chave primária (Autoincrement) |
+| `titulo` | `String` | Nome do filme |
+| `sinopse` | `String` | Breve descrição da história |
+| `ano_lancamento` | `Int` | Ano de lançamento |
+| `duracao_minutos` | `Int` | Duração em minutos |
+| `categoria_id` | `Int` | ID de associação com a categoria |
+
+---
+
+## 💻 Como Rodar o Projeto na Sua Máquina
+
+### Pré-requisitos
+- **Node.js** instalado na sua máquina.
+- Instância do **PostgreSQL** rodando (local ou na nuvem).
+
+### Passo a passo
+
+1. **Clone o repositório:**
    ```bash
-   npm installc
+   git clone https://github.com/FelipeGdasilva/moveflix-API.git
+   cd moveflix-API
+   
+2. **Instale as dependências**
+  ```
+  npm install
+  
+3. **Configure as variáveis de ambiente**
+  ```
+Crie um arquivo .env na raiz do projeto com a URL do seu PostgreSQL: DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco?schema=public"
+
+ 4. **Execute as migrações do Prisma (cria as tabelas no banco)**
+ npx prisma migrate dev
+
+ 5. **Inicie o servidor**
+
+ npm run dev
+```
+
+  
