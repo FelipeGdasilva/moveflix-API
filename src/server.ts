@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import dotenv from "dotenv";
+import { error } from "console";
 
 // Carrega as variáveis de ambiente do arquivo .env
 dotenv.config();
@@ -68,6 +69,27 @@ app.post("/movies", async (req, res) => {
   } catch (error) {
     console.error("Erro ao cadastrar filme:", error);
     res.status(500).json({ error: "Erro interno ao cadastrar o filme" });
+  }
+});
+
+app.put("/movies/:id", async (req, res) =>{
+  try{
+    const id = Number(req.params.id);
+    const {titulo, sinopse, ano_lancamento, duracao_minutos, categoria_id} = req.body;
+    const filmeAtualizado = await prisma.filmes.update({
+      where:{id:id},
+      data:{
+        titulo: titulo,
+        sinopse: sinopse,
+        ano_lancamento: Number(ano_lancamento),
+        duracao_minutos: Number(duracao_minutos),
+        categoria_id: Number(categoria_id),
+      },
+    });
+    return res.status(200).json(filmeAtualizado);
+  }catch(error){
+    console.error("Erro ao atualizar filme:", error);
+    return res.status(500).json({error:"Erromao atualizar o filme. Verifique se o ID existe!"});
   }
 });
 
