@@ -66,11 +66,11 @@ O banco contém a tabela principal `filmes` estruturada com os seguintes campos:
    cd moveflix-API
    
 2. **Instale as dependências**
-
+  ```bash
   npm install
   
 3. **Configure as variáveis de ambiente**
-  
+  ```bash
 Crie um arquivo .env na raiz do projeto com a URL do seu PostgreSQL
 DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco?schema=public"
 
