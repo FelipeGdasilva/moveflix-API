@@ -58,27 +58,37 @@ O banco contém a tabela principal `filmes` estruturada com os seguintes campos:
 - **Node.js** instalado na sua máquina.
 - Instância do **PostgreSQL** rodando (local ou na nuvem).
 
-### Passo a passo
 
- 1. **Clone o repositório:**
+  
+## Passo a passo
+
+1. **Clone o repositório:**
    ```bash
    git clone https://github.com/FelipeGdasilva/moveflix-API.git
    cd moveflix-API
-   
- 2. **Instale as dependências**
-  ```bash
-  npm install
-  
- 3. **Configure as variáveis de ambiente**
-  ```bash
- Crie um arquivo .env na raiz do projeto com a URL do seu PostgreSQL
- DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco?schema=public"
+   ```
 
- 4. **Execute as migrações do Prisma (cria as tabelas no banco)**
- npx prisma migrate dev
+2. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
 
- 5. **Inicie o servidor**
- npm run dev
+3. **Configure as variáveis de ambiente:**
 
+   Crie um arquivo `.env` na raiz do projeto e adicione a URL do seu banco de dados PostgreSQL:
 
-  
+   ```env
+   DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco?schema=public"
+   ```
+
+4. **Execute as migrações do Prisma** (cria as tabelas no banco de dados):
+
+   ```bash
+   npx prisma migrate dev
+   ```
+
+5. **Inicie o servidor:**
+
+   ```bash
+   npm run dev
+   ```
