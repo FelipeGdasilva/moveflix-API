@@ -66,12 +66,13 @@ O banco contém a tabela principal `filmes` estruturada com os seguintes campos:
    cd moveflix-API
    
 2. **Instale as dependências**
-  ```
+
   npm install
   
 3. **Configure as variáveis de ambiente**
-  ```
-Crie um arquivo .env na raiz do projeto com a URL do seu PostgreSQL: DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco?schema=public"
+  
+Crie um arquivo .env na raiz do projeto com a URL do seu PostgreSQL
+DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco?schema=public"
 
  4. **Execute as migrações do Prisma (cria as tabelas no banco)**
  npx prisma migrate dev
