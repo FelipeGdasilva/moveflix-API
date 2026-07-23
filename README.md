@@ -77,8 +77,7 @@ Crie um arquivo .env na raiz do projeto com a URL do seu PostgreSQL: DATABASE_UR
  npx prisma migrate dev
 
  5. **Inicie o servidor**
-
  npm run dev
-```
+
 
   
