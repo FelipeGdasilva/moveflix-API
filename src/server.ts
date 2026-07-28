@@ -119,6 +119,21 @@ app.delete("/movies/:id", async (req, res) => {
   }
 });
 
+app.get("/movies/category/:categoryId", async (req, res) => {
+  const categoryId = Number(req.params.categoryId);
+
+  try {
+    const movies = await prisma.filmes.findMany({
+      where: {
+        categoria_id: categoryId,
+      },
+    });
+
+    return res.status(200).send(movies);
+  } catch (error) {
+    return res.status(500).send({ message: "Falha ao filtrar filmes por categoria" });
+  }
+});
 // -------------------------------------------------------------------------
 // INICIALIZAÇÃO DO SERVIDOR
 // -------------------------------------------------------------------------
