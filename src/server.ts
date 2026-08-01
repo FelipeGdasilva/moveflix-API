@@ -1,17 +1,23 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import swaggerUi from "swagger-ui-express";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import dotenv from "dotenv";
-import { error } from "console";
+
+// Importa o arquivo JSON com a documentação do Swagger
+import swaggerDocs from "../swagger.json" with { type: "json" };
 
 // Carrega as variáveis de ambiente do arquivo .env
 dotenv.config();
 
 const app = express();
 
-// Middleware obrigatório para a API conseguir ler o JSON enviado pelo Thunder Client
+// Middleware obrigatório para a API conseguir ler o JSON enviado no corpo das requisições
 app.use(express.json());
+
+// Middleware para servir a documentação do Swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // -------------------------------------------------------------------------
 // CONFIGURAÇÃO DE CONEXÃO DO PRISMA 7 (Piscina de Conexões)
@@ -27,31 +33,30 @@ const prisma = new PrismaClient({ adapter });
 // ROTAS DA API
 // -------------------------------------------------------------------------
 
-// 1. Rota de Ontem: Listar todos os filmes (GET)
+// 1. Listar todos os filmes (GET)
 app.get("/movies", async (req, res) => {
   try {
     const movies = await prisma.filmes.findMany();
-    res.status(200).json(movies);
+    return res.status(200).json(movies);
   } catch (error) {
     console.error("Erro ao buscar filmes:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
+    return res.status(500).json({ error: "Erro interno do servidor" });
   }
 });
 
-// 2. Rota de Hoje: Cadastrar um novo filme (POST) - Parte 2 Dinâmica
+// 2. Cadastrar um novo filme (POST)
 app.post("/movies", async (req, res) => {
   try {
-    // Pegamos as informações que vêm do "frontend" (Thunder Client)
-    // Deixei mapeado com os nomes em português para casar perfeitamente com seu banco!
     const { titulo, sinopse, ano_lancamento, duracao_minutos, categoria_id } = req.body;
+    
     const filmeExistente = await prisma.filmes.findFirst({
-      where:{
-        titulo:{equals: titulo, mode: "insensitive"},
-      }
+      where: {
+        titulo: { equals: titulo, mode: "insensitive" },
+      },
     });
 
     if (filmeExistente) {
-      return res.status(400).json({ message: "já existe um filme cadastrado com esse titulo!" });
+      return res.status(400).json({ message: "Já existe um filme cadastrado com esse título!" });
     }
 
     const novoFilme = await prisma.filmes.create({
@@ -60,25 +65,26 @@ app.post("/movies", async (req, res) => {
         sinopse: sinopse,
         ano_lancamento: Number(ano_lancamento),
         duracao_minutos: Number(duracao_minutos),
-        categoria_id: Number(categoria_id), // Garante que vai como número inteiro para o banco
+        categoria_id: Number(categoria_id),
       },
     });
 
-    // Retorna o filme criado com status 201 (Created)
-    res.status(201).json(novoFilme);
+    return res.status(201).json(novoFilme);
   } catch (error) {
     console.error("Erro ao cadastrar filme:", error);
-    res.status(500).json({ error: "Erro interno ao cadastrar o filme" });
+    return res.status(500).json({ error: "Erro interno ao cadastrar o filme" });
   }
 });
 
-app.put("/movies/:id", async (req, res) =>{
-  try{
+// 3. Atualizar um filme existente (PUT)
+app.put("/movies/:id", async (req, res) => {
+  try {
     const id = Number(req.params.id);
-    const {titulo, sinopse, ano_lancamento, duracao_minutos, categoria_id} = req.body;
+    const { titulo, sinopse, ano_lancamento, duracao_minutos, categoria_id } = req.body;
+    
     const filmeAtualizado = await prisma.filmes.update({
-      where:{id:id},
-      data:{
+      where: { id: id },
+      data: {
         titulo: titulo,
         sinopse: sinopse,
         ano_lancamento: Number(ano_lancamento),
@@ -86,18 +92,19 @@ app.put("/movies/:id", async (req, res) =>{
         categoria_id: Number(categoria_id),
       },
     });
+    
     return res.status(200).json(filmeAtualizado);
-  }catch(error){
+  } catch (error) {
     console.error("Erro ao atualizar filme:", error);
-    return res.status(500).json({error:"Erromao atualizar o filme. Verifique se o ID existe!"});
+    return res.status(500).json({ error: "Erro ao atualizar o filme. Verifique se o ID existe!" });
   }
 });
 
+// 4. Remover um filme (DELETE)
 app.delete("/movies/:id", async (req, res) => {
   const id = Number(req.params.id);
 
   try {
-    // 1. Verifica se o filme existe
     const movie = await prisma.filmes.findUnique({
       where: { id },
     });
@@ -106,19 +113,18 @@ app.delete("/movies/:id", async (req, res) => {
       return res.status(404).send({ message: "Filme não encontrado" });
     }
 
-    // 2. Remove o filme do banco de dados
     await prisma.filmes.delete({
       where: { id },
     });
 
-    // 3. Responde sucesso dentro do try
     return res.status(200).send({ message: "Filme removido com sucesso" });
   } catch (error) {
-    // 4. Captura qualquer erro inesperado
+    console.error("Erro ao remover filme:", error);
     return res.status(500).send({ message: "Falha ao remover o registro" });
   }
 });
 
+// 5. Filtrar filmes por categoria (GET)
 app.get("/movies/category/:categoryId", async (req, res) => {
   const categoryId = Number(req.params.categoryId);
 
@@ -131,13 +137,16 @@ app.get("/movies/category/:categoryId", async (req, res) => {
 
     return res.status(200).send(movies);
   } catch (error) {
+    console.error("Erro ao filtrar por categoria:", error);
     return res.status(500).send({ message: "Falha ao filtrar filmes por categoria" });
   }
 });
+
 // -------------------------------------------------------------------------
 // INICIALIZAÇÃO DO SERVIDOR
 // -------------------------------------------------------------------------
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando redondinho na porta ${PORT}!`);
+  console.log(`📄 Documentação Swagger disponível em http://localhost:${PORT}/api-docs`);
 });

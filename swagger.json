@@ -1,0 +1,49 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Moveflix API",
+    "description": "Documentação da API do Moveflix para gerenciamento de filmes e categorias.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/movies": {
+      "get": {
+        "summary": "Lista todos os filmes",
+        "description": "Retorna uma lista com todos os filmes cadastrados no banco de dados.",
+        "responses": {
+          "200": {
+            "description": "Lista de filmes retornada com sucesso."
+          },
+          "500": {
+            "description": "Erro interno no servidor."
+          }
+        }
+      }
+    },
+    "/movies/category/{categoryId}": {
+      "get": {
+        "summary": "Filtra filmes por ID da categoria",
+        "description": "Retorna todos os filmes pertencentes à categoria informada.",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "description": "ID numérico da categoria",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Filmes filtrados com sucesso."
+          },
+          "500": {
+            "description": "Erro ao filtrar filmes por categoria."
+          }
+        }
+      }
+    }
+  }
+}
