@@ -8,6 +8,7 @@
   "paths": {
     "/movies": {
       "get": {
+        "tags": ["Filmes"],
         "summary": "Lista todos os filmes",
         "description": "Retorna uma lista com todos os filmes cadastrados no banco de dados.",
         "responses": {
@@ -18,10 +19,87 @@
             "description": "Erro interno no servidor."
           }
         }
+      },
+      "post": {
+        "tags": ["Filmes"],
+        "summary": "Cadastra um novo filme",
+        "description": "Cria um novo registro de filme no banco de dados.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "titulo": { "type": "string", "example": "Matrix" },
+                  "sinopse": { "type": "string", "example": "Um hacker descobre a realidade." },
+                  "ano_lancamento": { "type": "integer", "example": 1999 },
+                  "duracao_minutos": { "type": "integer", "example": 136 },
+                  "categoria_id": { "type": "integer", "example": 1 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Filme criado com sucesso."
+          },
+          "400": {
+            "description": "Já existe um filme cadastrado com esse título."
+          },
+          "500": {
+            "description": "Erro interno ao cadastrar o filme."
+          }
+        }
+      }
+    },
+    "/movies/{id}": {
+      "put": {
+        "tags": ["Filmes"],
+        "summary": "Atualiza um filme existente",
+        "description": "Atualiza os dados de um filme cadastrado com base no seu ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID numérico do filme a ser atualizado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "titulo": { "type": "string", "example": "Matrix Reloaded" },
+                  "sinopse": { "type": "string", "example": "A continuação da saga de Neo." },
+                  "ano_lancamento": { "type": "integer", "example": 2003 },
+                  "duracao_minutos": { "type": "integer", "example": 138 },
+                  "categoria_id": { "type": "integer", "example": 1 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filme atualizado com sucesso."
+          },
+          "500": {
+            "description": "Erro ao atualizar o filme. Verifique se o ID existe."
+          }
+        }
       }
     },
     "/movies/category/{categoryId}": {
       "get": {
+        "tags": ["Filmes"],
         "summary": "Filtra filmes por ID da categoria",
         "description": "Retorna todos os filmes pertencentes à categoria informada.",
         "parameters": [
