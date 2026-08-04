@@ -95,6 +95,33 @@
             "description": "Erro ao atualizar o filme. Verifique se o ID existe."
           }
         }
+      },
+      "delete": {
+        "tags": ["Filmes"],
+        "summary": "Remove um filme",
+        "description": "Remove um registro de filme do banco de dados com base no seu ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID numérico do filme a ser removido",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Filme removido com sucesso."
+          },
+          "404": {
+            "description": "Filme não encontrado."
+          },
+          "500": {
+            "description": "Falha ao remover o registro."
+          }
+        }
       }
     },
     "/movies/category/{categoryId}": {
