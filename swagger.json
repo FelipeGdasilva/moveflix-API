@@ -127,14 +127,14 @@
     "/movies/category/{categoryId}": {
       "get": {
         "tags": ["Filmes"],
-        "summary": "Filtra filmes por ID da categoria",
-        "description": "Retorna todos os filmes pertencentes à categoria informada.",
+        "summary": "Filtra filmes por ID do gênero/categoria",
+        "description": "Retorna uma lista contendo todos os filmes pertencentes ao gênero/categoria informada.",
         "parameters": [
           {
             "name": "categoryId",
             "in": "path",
             "required": true,
-            "description": "ID numérico da categoria",
+            "description": "ID numérico da categoria/gênero para filtrar os filmes",
             "schema": {
               "type": "integer"
             }
@@ -142,10 +142,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Filmes filtrados com sucesso."
+            "description": "Filmes do gênero filtrados com sucesso."
           },
           "500": {
-            "description": "Erro ao filtrar filmes por categoria."
+            "description": "Erro interno ao filtrar filmes por gênero."
           }
         }
       }
